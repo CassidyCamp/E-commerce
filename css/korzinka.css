@@ -241,7 +241,7 @@ main i {
   align-items: center;
   justify-content: space-around;
 }
-.wrapper_info {
+.wrapper_info_korzinka {
   width: auto;
   height: 100%;
   display: flex;
@@ -416,7 +416,7 @@ main i {
 .error-order {
   width: 80%;
   height: 30px;
-  background-color: #D80000;
+  background-color: #d80000;
   margin: auto;
   display: flex;
   align-items: center;
@@ -424,18 +424,91 @@ main i {
   color: white;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    font-size: 15px;
-    margin-top: 20px;
-    border-radius: 6px;
+  font-size: 15px;
+  margin-top: 20px;
+  border-radius: 6px;
 }
-.order-delet{
-    width: 90%;
-    height: 50px;
-    margin: 20px 15px;
-    background-color: #FCD5BA;
-    color: #FF6633;
-    border: none;
-    border-radius: 4px;
+.order-delet {
+  width: 90%;
+  height: 50px;
+  margin: 20px 15px;
+  background-color: #fcd5ba;
+  color: #ff6633;
+  border: none;
+  border-radius: 4px;
 }
 /* #FCD5BA */
 /* #FF6633 */
+
+@media (max-width: 1210px) {
+  .child-product {
+    overflow: auto;
+    height: auto;
+  }
+  .child {
+    height: auto;
+    width: auto;
+    padding: 10px;
+  }
+  .text-child h1 {
+    font-size: 1.8vw;
+  }
+  .text-child {
+    width: auto;
+  }
+  .wrapper_suma {
+    flex-direction: column;
+    width: auto;
+  }
+  .countFn {
+    height: 50px;
+  }
+  .info-product {
+    height: auto;
+  }
+}
+@media (max-width: 950px) {
+  .text-child{
+    width: auto;
+  }
+}
+@media (max-width: 800px) {
+  .wrapper-product{
+    flex-direction: column;
+    height: auto;
+    row-gap: 50px;
+  }
+  .child{
+    flex-direction: column;
+  }
+  .wrapper_suma{
+    flex-direction: row;
+    width: 100%;
+  }
+  .product{
+    height: auto;
+  }
+  .info-product .itag-suma{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .text-child h1 {
+    font-size: 15px;
+  }
+  .img-icon img{
+    width: 100px;
+  }
+  .element_2{
+    width: auto;
+    display: flex;
+  }
+  .element_2 nav:last-child span{
+    font-size: 12px;
+  }
+  .aksiya{
+    width: 60px;
+    height: 30px;
+    font-size: 16px;
+  }
+}

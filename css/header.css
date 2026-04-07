@@ -205,3 +205,45 @@ button:hover{
   align-items: center;
   justify-content: center;
 }
+
+/* ─── Seller Dropdown ──────────────────────────────────────────────────── */
+.Logo_card {
+  position: relative;
+}
+.seller_dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  min-width: 220px;
+  z-index: 9999;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.seller_menu_item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  color: #414141;
+  font-size: 14px;
+  font-family: system-ui, sans-serif;
+  text-decoration: none;
+  transition: background 0.2s;
+  border-left: 3px solid transparent;
+}
+.seller_menu_item:hover {
+  background: #f5f5f5;
+  border-left-color: #FF6633;
+  color: #FF6633;
+}
+.seller_menu_item i {
+  font-size: 20px;
+  color: #70c05b;
+}

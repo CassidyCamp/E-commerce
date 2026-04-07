@@ -1,0 +1,537 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMart - Enterprise Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#70C05B', // Severyanochka Green approx
+                            orange: '#FF6633', // Severyanochka Orange approx
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#FBFBFB] text-slate-700 antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-100">
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8 py-3">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-8">
+                
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 shrink-0">
+                    <div class="relative">
+                        <iconify-icon icon="simple-icons:spacex" width="36" class="text-orange-500"></iconify-icon>
+                        <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-green rounded-full border-2 border-white"></div>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-slate-900 hidden sm:block">AEROMART</span>
+                </a>
+
+                <!-- Catalog Button -->
+                <button class="bg-brand-green hover:bg-green-600 transition text-white px-6 py-2.5 rounded-lg flex items-center gap-2 font-semibold text-sm shrink-0">
+                    <i data-lucide="menu" class="w-5 h-5 stroke-[2]"></i>
+                    <span>Catalog</span>
+                </button>
+
+                <!-- Search -->
+                <div class="flex-1 w-full relative">
+                    <input type="text" placeholder="Search for components (e.g. 'Titanium', 'Thrusters')..." class="w-full bg-white border border-slate-300 rounded-lg py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all placeholder:text-slate-400">
+                    <i data-lucide="search" class="absolute right-3 top-2.5 w-5 h-5 text-slate-400 stroke-[1.5]"></i>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-6 text-[11px] font-medium text-slate-500 shrink-0">
+                    <a href="#" class="flex flex-col items-center gap-1 hover:text-brand-green transition group">
+                        <i data-lucide="heart" class="w-5 h-5 stroke-[1.5] group-hover:fill-red-50 group-hover:text-red-500 transition-colors"></i>
+                        <span>Favorites</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center gap-1 hover:text-brand-green transition group">
+                        <i data-lucide="package" class="w-5 h-5 stroke-[1.5]"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center gap-1 hover:text-brand-green transition group relative">
+                        <span class="absolute -top-1 right-0.5 bg-orange-500 text-white text-[10px] min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 font-bold">2</span>
+                        <i data-lucide="shopping-cart" class="w-5 h-5 stroke-[1.5]"></i>
+                        <span>Cart</span>
+                    </a>
+                    
+                    <!-- User -->
+                    <div class="flex items-center gap-2 pl-4 border-l border-slate-200 cursor-pointer hover:bg-slate-50 rounded-r-lg py-1 pr-2 transition">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&amp;auto=format&amp;fit=facearea&amp;facepad=2&amp;w=256&amp;h=256&amp;q=80" alt="User" class="w-8 h-8 rounded-full border border-slate-200 shadow-sm">
+                        <span class="hidden xl:block text-sm font-semibold text-slate-700">Alexey</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 stroke-[1.5]"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumbs -->
+    <div class="max-w-[1400px] mx-auto px-4 lg:px-8 py-4">
+        <nav class="flex text-xs text-slate-500 overflow-x-auto hide-scrollbar whitespace-nowrap gap-2">
+            <a href="#" class="hover:text-brand-green transition">Home</a>
+            <i data-lucide="chevron-right" class="w-3 h-3 self-center stroke-[1.5]"></i>
+            <a href="#" class="hover:text-brand-green transition">Catalog</a>
+            <i data-lucide="chevron-right" class="w-3 h-3 self-center stroke-[1.5]"></i>
+            <a href="#" class="hover:text-brand-green transition">Structural Components</a>
+            <i data-lucide="chevron-right" class="w-3 h-3 self-center stroke-[1.5]"></i>
+            <span class="text-slate-400">Titanium Alloys</span>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-[1400px] mx-auto px-4 lg:px-8 pb-16">
+
+        <!-- Product Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-3">
+                Falcon 9 Booster Landing Leg, High-Grade Titanium Alloy, 4.2m
+            </h1>
+            <div class="flex flex-wrap items-center gap-6 text-sm text-slate-500">
+                <span class="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded">art. 371431</span>
+                
+                <!-- Rating -->
+                <div class="flex items-center gap-2">
+                    <div class="flex text-orange-400">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-slate-200 fill-current"></i>
+                    </div>
+                    <a href="#" class="text-slate-500 underline decoration-slate-300 hover:text-brand-green">3 reviews</a>
+                </div>
+
+                <!-- Actions -->
+                <button class="flex items-center gap-1.5 hover:text-brand-green transition">
+                    <i data-lucide="share-2" class="w-4 h-4 stroke-[1.5]"></i>
+                    <span>Share</span>
+                </button>
+                <button class="flex items-center gap-1.5 hover:text-red-500 transition group">
+                    <i data-lucide="heart" class="w-4 h-4 stroke-[1.5] group-hover:fill-current"></i>
+                    <span>To favorites</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
+            
+            <!-- Gallery Section -->
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col-reverse sm:flex-row gap-4">
+                <!-- Thumbnails -->
+                <div class="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible hide-scrollbar shrink-0">
+                    <button class="w-20 h-20 border-2 border-brand-green rounded-lg p-1 bg-white">
+                        <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&amp;fit=crop&amp;q=80&amp;w=200" class="w-full h-full object-contain">
+                    </button>
+                    <button class="w-20 h-20 border border-slate-200 hover:border-brand-green/50 rounded-lg p-1 bg-white transition">
+                        <img src="https://images.unsplash.com/photo-1541185933-40b8f49c758e?auto=format&amp;fit=crop&amp;q=80&amp;w=200" class="w-full h-full object-contain opacity-70 hover:opacity-100">
+                    </button>
+                    <button class="w-20 h-20 border border-slate-200 hover:border-brand-green/50 rounded-lg p-1 bg-white transition">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;q=80&amp;w=200" class="w-full h-full object-contain opacity-70 hover:opacity-100">
+                    </button>
+                    <button class="w-20 h-20 border border-slate-200 hover:border-brand-green/50 rounded-lg p-1 bg-white transition">
+                        <img src="https://images.unsplash.com/photo-1614728853913-1e221a65d642?auto=format&amp;fit=crop&amp;q=80&amp;w=200" class="w-full h-full object-contain opacity-70 hover:opacity-100">
+                    </button>
+                </div>
+
+                <!-- Main Image -->
+                <div class="flex-1 bg-white rounded-2xl border border-slate-100 flex items-center justify-center p-8 relative min-h-[400px]">
+                    <div class="absolute top-4 right-4 bg-orange-500 text-white font-bold px-3 py-1 rounded-md text-sm shadow-sm">-50%</div>
+                    <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&amp;fit=crop&amp;q=80&amp;w=800" class="max-w-full max-h-[400px] object-contain drop-shadow-2xl">
+                    <iconify-icon icon="simple-icons:spacex" width="120" class="absolute bottom-6 left-6 text-slate-100 -z-0"></iconify-icon>
+                </div>
+            </div>
+
+            <!-- Pricing & Buy Box -->
+            <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                
+                <!-- Price Card -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-slate-50 to-orange-50 rounded-bl-full -z-0"></div>
+                    
+                    <div class="flex items-baseline justify-between mb-1 relative z-10">
+                        <div class="text-slate-400 text-lg line-through decoration-slate-300">$192,690</div>
+                        <div class="flex items-center gap-1 text-slate-800 text-3xl font-extrabold tracking-tight">
+                            $108,990 <span class="text-xl font-bold">USD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end mb-6 text-xs text-slate-400">
+                        With AeroMart Enterprise Account <i data-lucide="info" class="w-3 h-3 ml-1 stroke-[1.5]"></i>
+                    </div>
+
+                    <button class="w-full bg-brand-orange hover:bg-orange-600 active:bg-orange-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-orange-500/20 transition transform active:scale-[0.98] flex items-center justify-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 stroke-[2]"></i>
+                        Add to manifest
+                    </button>
+                    
+                    <div class="mt-4 text-center text-xs text-green-600 font-medium flex items-center justify-center gap-1">
+                        <i data-lucide="check-circle" class="w-3 h-3"></i> In stock at Cape Canaveral
+                    </div>
+                </div>
+
+                <!-- Specs -->
+                <div class="bg-slate-50 rounded-xl p-6 text-sm border border-slate-100">
+                    <h3 class="font-semibold text-slate-900 mb-4">Specifications</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between pb-3 border-b border-slate-200 border-dashed">
+                            <span class="text-slate-500">Brand</span>
+                            <span class="font-medium text-slate-900">SpaceX</span>
+                        </div>
+                        <div class="flex justify-between pb-3 border-b border-slate-200 border-dashed">
+                            <span class="text-slate-500">Material</span>
+                            <span class="font-medium text-slate-900">Ti-6Al-4V Alloy</span>
+                        </div>
+                        <div class="flex justify-between pb-3 border-b border-slate-200 border-dashed">
+                            <span class="text-slate-500">Weight</span>
+                            <span class="font-medium text-slate-900">450 kg</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Certifications</span>
+                            <span class="font-medium text-slate-900">NASA Class A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Bought Together -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Frequently procured together</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Card 1 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-xl font-bold text-slate-900 mb-1">$78,990</div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Hydraulic Piston Assembly, Heavy Duty</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 text-slate-200 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                         <img src="https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-xl font-bold text-slate-900 mb-1">$44,500</div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Ceramic Heat Shield Tiles (Set of 10)</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 bg-brand-orange text-white rounded-lg text-sm font-semibold hover:bg-orange-600 transition shadow-sm shadow-orange-100">
+                            In manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1590907047706-ee9c0fca31bd?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-xl font-bold text-slate-900 mb-1">$159,990</div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Raptor Vacuum Engine Nozzle Extension</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 text-slate-200 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 text-slate-200 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1635338600889-183422119c4d?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-xl font-bold text-slate-900 mb-1">$49,390</div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Liquid Oxygen Tank Pressure Sensor</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section: Actions/Promos -->
+        <section class="mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-slate-900">Current Promotions</h2>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-brand-green flex items-center gap-1 transition">
+                    View all <i data-lucide="chevron-right" class="w-4 h-4 stroke-[1.5]"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Promo Card 1 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">-50%</div>
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex items-end gap-2 mb-1">
+                            <div class="text-xl font-bold text-slate-900">$44,500</div>
+                            <div class="text-xs text-slate-400 line-through mb-1">$89,000</div>
+                        </div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Satellite Bus Frame - Aluminum</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promo Card 2 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">-50%</div>
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                         <img src="https://images.unsplash.com/photo-1574689049597-7e6df3db18b4?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex items-end gap-2 mb-1">
+                            <div class="text-xl font-bold text-slate-900">$44,500</div>
+                            <div class="text-xs text-slate-400 line-through mb-1">$89,000</div>
+                        </div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Propellant Flow Control Valve</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promo Card 3 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">-50%</div>
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1542382107-062e3d74550e?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex items-end gap-2 mb-1">
+                            <div class="text-xl font-bold text-slate-900">$44,500</div>
+                            <div class="text-xs text-slate-400 line-through mb-1">$89,000</div>
+                        </div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Avionics Wire Harness - Shielded</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 bg-brand-orange text-white rounded-lg text-sm font-semibold hover:bg-orange-600 transition shadow-sm">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promo Card 4 -->
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition group relative flex flex-col">
+                    <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">-50%</div>
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition z-10"><i data-lucide="heart" class="w-5 h-5 stroke-[1.5]"></i></button>
+                    
+                    <div class="aspect-square mb-4 bg-slate-50 rounded-lg p-6 flex items-center justify-center relative">
+                        <img src="https://images.unsplash.com/photo-1533729579624-b15392bc60dd?auto=format&amp;fit=crop&amp;q=80&amp;w=400" class="max-h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex items-end gap-2 mb-1">
+                            <div class="text-xl font-bold text-slate-900">$44,500</div>
+                            <div class="text-xs text-slate-400 line-through mb-1">$89,000</div>
+                        </div>
+                        <h3 class="text-sm text-slate-600 font-medium mb-3 line-clamp-2 min-h-[40px]">Backup Flight Computer (Used)</h3>
+                        
+                        <div class="flex text-orange-400 mb-4 text-xs">
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                        </div>
+                        
+                        <button class="w-full mt-auto py-2.5 border border-brand-green text-brand-green bg-white hover:bg-brand-green hover:text-white rounded-lg text-sm font-semibold transition">
+                            Add to manifest
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#FFFBF0] border-t border-slate-200 overflow-hidden relative">
+        <!-- Decorative Pattern Overlay -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#F59E0B 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+        <div class="max-w-[1400px] mx-auto px-4 lg:px-8 py-12 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-12">
+                
+                <!-- Logo & Brand -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <iconify-icon icon="simple-icons:spacex" width="32" class="text-orange-500"></iconify-icon>
+                        <span class="text-xl font-bold tracking-tight text-slate-900">AEROMART</span>
+                    </div>
+                    <p class="text-sm text-slate-500 max-w-xs">
+                        The premier orbital logistics and supply chain partner for the interplanetary era.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div class="flex gap-16 text-sm text-slate-600">
+                    <div class="flex flex-col gap-3">
+                        <h4 class="font-bold text-slate-900">Company</h4>
+                        <a href="#" class="hover:text-brand-orange transition">About Us</a>
+                        <a href="#" class="hover:text-brand-orange transition">Locations</a>
+                        <a href="#" class="hover:text-brand-orange transition">Careers</a>
+                        <a href="#" class="hover:text-brand-orange transition">ESG</a>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <h4 class="font-bold text-slate-900">Support</h4>
+                        <a href="#" class="hover:text-brand-orange transition">Contacts</a>
+                        <a href="#" class="hover:text-brand-orange transition">FAQ</a>
+                        <a href="#" class="hover:text-brand-orange transition">Returns</a>
+                        <a href="#" class="hover:text-brand-orange transition">Shipping</a>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <h4 class="font-bold text-slate-900">Legal</h4>
+                        <a href="#" class="hover:text-brand-orange transition">Privacy</a>
+                        <a href="#" class="hover:text-brand-orange transition">Terms</a>
+                        <a href="#" class="hover:text-brand-orange transition">ITAR Compliance</a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 text-slate-700 font-bold text-lg">
+                        <i data-lucide="phone" class="w-5 h-5 text-brand-orange stroke-[2]"></i>
+                        <span>+1 800 777 33 33</span>
+                    </div>
+                    <div class="flex gap-4">
+                         <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-400 hover:text-orange-500 transition border border-slate-100">
+                            <iconify-icon icon="simple-icons:instagram" width="20"></iconify-icon>
+                         </a>
+                         <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-400 hover:text-blue-500 transition border border-slate-100">
+                            <iconify-icon icon="simple-icons:twitter" width="20"></iconify-icon>
+                         </a>
+                         <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-400 hover:text-blue-600 transition border border-slate-100">
+                            <iconify-icon icon="simple-icons:linkedin" width="20"></iconify-icon>
+                         </a>
+                    </div>
+                    <div class="text-xs text-slate-400 mt-8">
+                        Design by <span class="font-bold text-slate-500">ZASOVSKIY</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body></html>

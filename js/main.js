@@ -1,11 +1,30 @@
 // BASE_URL, apiFetch, authHeader — api.js dan keladi (index.html da oldin yuklanadi)
 
 
-document.addEventListener("DOMContentLoaded", () => {
+let userFavorites = [];
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (localStorage.getItem('access')) {
+        updateCartCounter();
+        await fetchFavorites();
+    }
     fetchProducts();
     fetchCategories();
     initProfileDropdown();
 });
+
+async function fetchFavorites() {
+    try {
+        const res = await apiFetch('/api/catalog/favorites/');
+        if (res.ok) {
+            userFavorites = await res.json();
+            console.log('User favorites loaded', userFavorites);
+        }
+    } catch (err) {
+        console.error('Failed to fetch favorites', err);
+    }
+}
+
 
 // ─── Profile / Seller Dropdown ────────────────────────────────────────────────
 function initProfileDropdown() {
@@ -145,6 +164,10 @@ function renderProducts(products, container) {
         // ── Stars ───────────────────────────────────────────────────────────
         const starSvg = buildStarSvg(product.rating);
 
+        // ── Favorites ───────────────────────────────────────────────────────
+        const isFavItem = userFavorites.find(f => f.product === product.id);
+        const favClass = isFavItem ? 'active' : '';
+
         // ── Card ────────────────────────────────────────────────────────────
         const card = document.createElement('div');
         card.className = 'shoping';
@@ -152,7 +175,7 @@ function renderProducts(products, container) {
               <div class="img_product">
                 <img src="${product.image || './images/img_product/shirinlik.png'}" class="shirinlik" alt="${product.title}" />
                 ${percentBadge}
-                <div class="arxiv">
+                <div class="arxiv ${favClass}" onclick="toggleFavorite(${product.id}, event)">
                   <i class="bxr bx-heart"></i>
                 </div>
               </div>
@@ -160,11 +183,95 @@ function renderProducts(products, container) {
                 ${priceHTML}
                 <div class="city">${product.title}</div>
                 <div class="rating">${starSvg}</div>
-                <button onclick="addToCart(${product.id})">В корзину</button>
+                <button onclick="addToCart(${product.id}, event)">В корзину</button>
               </div>
         `;
         container.appendChild(card);
     });
 }
 
+// ─── Favorites API ───────────────────────────────────────────────────────────
+async function toggleFavorite(productId, event) {
+    if (event) event.stopPropagation();
+    
+    const targetEl = event ? (event.currentTarget instanceof Element ? event.currentTarget : event.target.closest('.arxiv')) : null;
 
+    if (!localStorage.getItem('access')) {
+        window.location.href = '/page/login.html';
+        return;
+    }
+
+    const favItemIndex = userFavorites.findIndex(f => f.product === productId);
+    const isFav = favItemIndex !== -1;
+    
+    try {
+        if (isFav) {
+            // Remove from favorites
+            const favId = userFavorites[favItemIndex].id;
+            const res = await apiFetch(`/api/catalog/favorites/${favId}/`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                userFavorites.splice(favItemIndex, 1);
+                if (targetEl) {
+                    targetEl.classList.remove('active');
+                }
+            }
+        } else {
+            // Add to favorites
+            const res = await apiFetch('/api/catalog/favorites/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product: productId })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                userFavorites.push(data);
+                if (targetEl) {
+                    targetEl.classList.add('active');
+                }
+            }
+        }
+    } catch (e) {
+        console.error('Failed to toggle favorite', e);
+    }
+}
+
+// ─── Cart API ────────────────────────────────────────────────────────────────
+async function addToCart(productId, event) {
+    if (event) event.stopPropagation();
+    try {
+        const res = await apiFetch('/api/cart/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product: productId })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            console.log('Added to cart', data);
+            
+            updateCartCounter();
+        } else {
+            console.error('Failed to add to cart');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function updateCartCounter() {
+    try {
+        const res = await apiFetch('/api/cart/');
+        if (res.ok) {
+            const items = await res.json();
+            const totalQuantity = items.length;
+            
+            const counterElements = document.querySelectorAll('.counter_heder');
+            counterElements.forEach(counter => {
+                counter.textContent = totalQuantity;
+            });
+        }
+    } catch (e) {
+        console.error('Failed to update cart counter:', e);
+    }
+}

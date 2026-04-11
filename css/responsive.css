@@ -17,6 +17,9 @@
 }
 
 @media (max-width: 950px) {
+  .card_shop {
+    grid-template-columns: repeat(3, 1fr);
+  }
   .card_shop .last {
     display: none;
   }
@@ -139,11 +142,12 @@
     display: block;
   }
   .card_shop {
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .text_box {
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .left_img img {
@@ -241,13 +245,50 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .city {
-    font-size: 17px;
+    font-size: 11px;
+    line-height: 14px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .narx {
+    font-size: 13px;
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .malumot {
+    font-size: 9px;
+  }
+  .narx-2{
+    margin-bottom: 10px;
   }
   .shoping {
-    width: 300px;
+    width: 100%;
+    min-height: auto;
+  }
+  .shoping > .img_product {
+    height: 110px;
   }
   .card_shop {
-    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    justify-items: stretch;
+  }
+  .info_product button {
+    height: 30px;
+    font-size: 13px;
+    margin-top: auto;
+  }
+  .arxiv {
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+  }
+  .foiz {
+    width: 40px;
+    height: 22px;
+    font-size: 12px;
+    margin-left: 5px;
+    margin-bottom: 5px;
   }
   .shablon h1 {
     font-size: 24px;

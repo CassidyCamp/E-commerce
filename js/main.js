@@ -74,19 +74,31 @@ async function fetchProducts() {
         const response = await apiFetch('/api/catalog/products/');
         if (!response.ok) throw new Error('Network error');
         const products = await response.json();
-        
+
+        // Fetch cart items to know which products are already in cart
+        let cartItems = [];
+        if (localStorage.getItem('access')) {
+            const cartRes = await apiFetch('/api/cart/');
+            if (cartRes.ok) {
+                cartItems = await cartRes.json();
+            }
+        }
+
+        // Filter products with discount_percent for Акции section
+        const discountedProducts = products.filter(p => p.discount_percent && parseFloat(p.discount_percent) > 0);
+
         const cardShops = document.querySelectorAll('.card_shop');
         if (cardShops.length > 0) {
-            // Populate the first block (Акции)
-            renderProducts(products.slice(0, 4), cardShops[0]);
+            // Populate the first block (Акции) - only products with discount
+            renderProducts(discountedProducts.slice(0, 4), cardShops[0], cartItems);
         }
         if (cardShops.length > 1) {
-            // Populate the second block (Новинки)
-            renderProducts(products.length > 4 ? products.slice(4, 8) : products, cardShops[1]);
+            // Populate the second block (Новинки) - first products from the list
+            renderProducts(products.slice(0, 4), cardShops[1], cartItems);
         }
         if (cardShops.length > 2) {
-            // Populate the third block (Покупали раньше)
-            renderProducts(products, cardShops[2]);
+            // Populate the third block (Покупали раньше) - max 4 products
+            renderProducts(products.slice(0, 4), cardShops[2], cartItems);
         }
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -123,7 +135,7 @@ function buildStarSvg(rating) {
     return `<svg width="256" height="16" viewBox="0 0 256 16" fill="none" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
 }
 
-function renderProducts(products, container) {
+function renderProducts(products, container, cartItems = []) {
     if (!products || products.length === 0) return;
     container.innerHTML = '';
 
@@ -168,6 +180,25 @@ function renderProducts(products, container) {
         const isFavItem = userFavorites.find(f => f.product === product.id);
         const favClass = isFavItem ? 'active' : '';
 
+        // ── Cart button or quantity control ─────────────────────────────────
+        const cartItem = cartItems.find(item => item.product === product.id);
+        let cartButtonHTML;
+
+        if (cartItem) {
+            cartButtonHTML = `
+                <div class="quantity-control">
+                    <button class="qty-btn minus" onclick="decreaseCartItem(${cartItem.id}, event)">
+                        <i class="bxr bx-minus"></i>
+                    </button>
+                    <span class="qty-value">${cartItem.quantity}</span>
+                    <button class="qty-btn plus" onclick="increaseCartItem(${cartItem.id}, event)">
+                        <i class="bxr bx-plus"></i>
+                    </button>
+                </div>`;
+        } else {
+            cartButtonHTML = `<button onclick="addToCart(${product.id}, event)">В корзину</button>`;
+        }
+
         // ── Card ────────────────────────────────────────────────────────────
         const card = document.createElement('div');
         card.className = 'shoping';
@@ -183,7 +214,7 @@ function renderProducts(products, container) {
                 ${priceHTML}
                 <div class="city">${product.title}</div>
                 <div class="rating">${starSvg}</div>
-                <button onclick="addToCart(${product.id}, event)">В корзину</button>
+                ${cartButtonHTML}
               </div>
         `;
         container.appendChild(card);
@@ -247,12 +278,50 @@ async function addToCart(productId, event) {
             body: JSON.stringify({ product: productId })
         });
         if (res.ok) {
-            const data = await res.json();
-            console.log('Added to cart', data);
-            
+            console.log('Added to cart');
+            // Refresh products to show updated cart state
+            fetchProducts();
             updateCartCounter();
         } else {
             console.error('Failed to add to cart');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function decreaseCartItem(cartItemId, event) {
+    if (event) event.stopPropagation();
+    try {
+        const res = await apiFetch(`/api/cart/${cartItemId}/decrease/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (res.ok) {
+            console.log('Decreased cart item');
+            fetchProducts();
+            updateCartCounter();
+        } else {
+            console.error('Failed to decrease cart item');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function increaseCartItem(cartItemId, event) {
+    if (event) event.stopPropagation();
+    try {
+        const res = await apiFetch(`/api/cart/${cartItemId}/increase/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (res.ok) {
+            console.log('Increased cart item');
+            fetchProducts();
+            updateCartCounter();
+        } else {
+            console.error('Failed to increase cart item');
         }
     } catch (e) {
         console.error(e);

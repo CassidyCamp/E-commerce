@@ -199,6 +199,72 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/cart/{id}/decrease/:
+    post:
+      operationId: cart_decrease_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cart item.
+        required: true
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
+  /api/cart/{id}/increase/:
+    post:
+      operationId: cart_increase_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cart item.
+        required: true
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItem'
+          description: ''
   /api/catalog/categories/:
     get:
       operationId: catalog_categories_list
@@ -611,7 +677,6 @@ paths:
       - orders
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -639,7 +704,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '201':
           content:
@@ -661,7 +725,6 @@ paths:
       - orders
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -694,7 +757,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -726,7 +788,6 @@ paths:
               $ref: '#/components/schemas/PatchedOrder'
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -747,7 +808,6 @@ paths:
       - orders
       security:
       - jwtAuth: []
-      - {}
       responses:
         '204':
           description: No response body
@@ -964,9 +1024,13 @@ components:
     FavoritSerailzer:
       type: object
       properties:
+        id:
+          type: integer
+          readOnly: true
         product:
           type: integer
       required:
+      - id
       - product
     Order:
       type: object
@@ -1042,6 +1106,9 @@ components:
     PatchedFavoritSerailzer:
       type: object
       properties:
+        id:
+          type: integer
+          readOnly: true
         product:
           type: integer
     PatchedOrder:

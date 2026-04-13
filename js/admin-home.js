@@ -221,25 +221,35 @@ async function saveProduct() {
   const fd = new FormData();
   fd.append('title',         document.getElementById('productTitle').value.trim());
   fd.append('description',   document.getElementById('productDesc').value.trim());
-  fd.append('regular_price', parseFloat(document.getElementById('productRegularPrice').value) || 0);
+  fd.append('regular_price', String(parseFloat(document.getElementById('productRegularPrice').value) || 0));
   const cp = parseFloat(document.getElementById('productCardPrice').value);
-  if (cp) fd.append('card_price', cp);
+  if (cp) fd.append('card_price', String(cp));
   fd.append('brand',        document.getElementById('productBrand').value.trim());
   fd.append('country',      document.getElementById('productCountry').value.trim());
   fd.append('weight',       document.getElementById('productWeight').value.trim());
-  fd.append('stock',        parseInt(document.getElementById('productStock').value) || 0);
+  fd.append('stock',        String(parseInt(document.getElementById('productStock').value) || 0));
   fd.append('is_available', document.getElementById('productAvailable').checked);
   if (imageFile) fd.append('image', imageFile);
 
   try {
     const url    = id ? `${API}/api/catalog/products/${id}/` : `${API}/api/catalog/products/`;
     const method = id ? 'PUT' : 'POST';
-    const res    = await apiFetch(url, { method, body: fd });
-    if (!res.ok) throw new Error();
+
+    const res = await apiFetch(url, { method, body: fd });
+
+    if (!res.ok) {
+      // Log detailed error from server
+      const errData = await res.json().catch(() => null);
+      console.error('Save product error:', res.status, errData);
+      showToast(`Saqlashda xatolik: ${res.status} ${errData ? JSON.stringify(errData).slice(0, 80) : ''}`, 'error');
+      throw new Error('Save failed');
+    }
+
     showToast(id ? "Mahsulot yangilandi ✓" : "Mahsulot qo'shildi ✓");
     closeModal('productModal');
     loadProducts();
-  } catch {
+  } catch (e) {
+    if (e.message === 'Save failed') return;
     showToast('Saqlashda xatolik', 'error');
   }
 }

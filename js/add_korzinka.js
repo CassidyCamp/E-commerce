@@ -1,99 +1,198 @@
-// document.body.style.backgroundColor = 'red'
+document.addEventListener('DOMContentLoaded', () => {
+    const childProductContainer = document.querySelector('.child-product');
+    const counterHeader = document.querySelector('.counter_heder');
+    const sumProduct = document.querySelector('.sum-product p');
+    const itagSuma = document.querySelector('.itag-suma h1');
+    const vdeliBtn = document.querySelector('.vdeli');
+    const deleteBtn = document.querySelector('.dalete');
+    const elementProduct1Text = document.querySelector('.element-product1 p:first-child');
+    const elementProduct1Price = document.querySelector('.element-product1 p:last-child');
+    const elementProduct2Node = document.querySelector('.element-product2');
+    const elementProduct2Discount = document.querySelector('.element-product2 p:last-child');
 
-// const btn = document.querySelectorAll('.shopping')
-// btn.addEventListener("click",()=>{
-//     console.log('hello world');
-    
-// } )
+    const BASE_URL = 'http://localhost:8000';
+    const accessToken = localStorage.getItem('access');
 
-// const btn = document.querySelectorAll('button'); 
-// for (let i = 0; i < btn.length; i++) {
-//     btn.addEventListener('click', () => { 
-//     console.log('awdojjawnd');
-//     });
-// }
+    // Agar savatcha elementi topilmasa, kodni to'xtatish
+    if (!childProductContainer) return;
 
-// Barcha index buttonlarni topamiz
-const buttons_index = document.querySelectorAll('.shoping .info_product button');
-const counter = document.querySelector('.counter_heder');
-const index_img = document.querySelectorAll('.img_product img');
-const korzinka_img = document.querySelector('.img-icon img');
-
-// index_img.setAttribute('src',korzinka_img.getAttribute('src')
-// korzinka_img.stayle.backroundColor = 'red'
-
-let i = 1
-
-// Har biriga click event qo‘shamiz
-buttons_index.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    counter.textContent = ++i 
-    const cart_shop = btn.parentElement.parentElement
-    const img = cart_shop.querySelector('.img_product img')
-    const src_index = '.' + img.getAttribute('src')
-    // korzinka_img.setAttribute('src',src_index)
-    
-  });
-});
-
-
-
-
-
-// karzinka counter qilish
-const countFn_parent = document.querySelectorAll('.countFn')
-const countFn_num = document.querySelector('.countFn p')
-const remove_btn = document.querySelector('.countFn .minus_add')
-const add_btn = document.querySelector('.countFn .plus_add')
-const counter_num = 0
-
-
-
-// karzinka add plus bilan add minus
-countFn_parent.forEach((btn_prdct) => {
-  btn_prdct.addEventListener('click', () => {
-    
-    
-    if (btn_prdct.classList.contains('minus_add')) {
-      countFn_num.textContent = --i 
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
-    // Agar tugma REMOVE bo'lsa
-    if (btn_prdct.classList.contains('plus_add')) {
-      countFn_num.textContent = ++i 
+    async function fetchProduct(productId) {
+        try {
+            const res = await fetch(`${BASE_URL}/api/catalog/products/${productId}/`, { headers });
+            if (!res.ok) throw new Error('Product not found');
+            return await res.json();
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
     }
-    
-    console.log('wawdaw');
-  });
-  console.log(btn_prdct);
-});
 
-
-
-
-/*// karzinka counter qilish
-const countFn_parent = document.querySelectorAll('.countFn');
-
-countFn_parent.forEach((counterBox) => {
-  const countNum = counterBox.querySelector('p');        // har bir blokdagi son
-  const remove_btn = counterBox.querySelector('.minus_add');
-  const add_btn = counterBox.querySelector('.plus_add');
-
-  let i = 0; // har bir blok uchun alohida sanagich
-
-  // Minus tugmasi
-  remove_btn.addEventListener('click', () => {
-    if (i > 0) { // manfiy bo'lmasligi uchun
-      i--;
-      countNum.textContent = i;
+    async function fetchCart() {
+        if (!accessToken) {
+            window.location.href = 'login.html';
+            return;
+        }
+        try {
+            const res = await fetch(`${BASE_URL}/api/cart/`, { headers });
+            if (res.status === 401) {
+                console.error("401 Unauthorized - redirecting to login");
+                window.location.href = 'login.html';
+                return;
+            }
+            if (!res.ok) throw new Error('Cart not found');
+            const cartItems = await res.json();
+            renderCart(cartItems);
+        } catch (e) {
+            console.error(e);
+        }
     }
-  });
 
-  // Plus tugmasi
-  add_btn.addEventListener('click', () => {
-    i++;
-    countNum.textContent = i;
-  });
+    async function increaseCartItem(id) {
+        try {
+            const res = await fetch(`${BASE_URL}/api/cart/${id}/increase/`, {
+                method: 'POST',
+                headers
+            });
+            if (res.ok) {
+                fetchCart(); // Yangilangan holatni olib kelish
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function decreaseCartItem(id) {
+        try {
+            const res = await fetch(`${BASE_URL}/api/cart/${id}/decrease/`, {
+                method: 'POST',
+                headers
+            });
+            if (res.ok) {
+                fetchCart(); // Yangilangan holatni olib kelish
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    if (vdeliBtn) {
+        vdeliBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('.child .ui-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+        });
+    }
+
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', async () => {
+            const checkedItems = document.querySelectorAll('.child input.ui-checkbox:checked');
+            for (const checkbox of checkedItems) {
+                const itemId = checkbox.dataset.id;
+                if (itemId) {
+                    try {
+                        await fetch(`${BASE_URL}/api/cart/${itemId}/`, {
+                            method: 'DELETE',
+                            headers
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            }
+            fetchCart();
+        });
+    }
+
+    async function renderCart(cartItems) {
+        childProductContainer.innerHTML = '';
+        let totalItems = 0;
+        let totalPrice = 0;
+        let totalRegularPrice = 0;
+
+        for (const item of cartItems) {
+            const product = await fetchProduct(item.product);
+            if (!product) continue;
+
+            totalItems += item.quantity;
+            
+            let regularP = parseFloat(product.regular_price || 0);
+            let cardP = parseFloat(product.card_price || regularP);
+            let currentPrice = cardP > 0 && cardP < regularP ? cardP : regularP;
+
+            totalRegularPrice += regularP * item.quantity;
+            totalPrice += currentPrice * item.quantity;
+
+            const childDiv = document.createElement('div');
+            childDiv.className = 'child';
+
+            childDiv.innerHTML = `
+                <div class="wrapper_info_korzinka">
+                    <span class="img-icon">
+                        <input type="checkbox" class="ui-checkbox" checked data-id="${item.id}" />
+                        <img src="${product.image ? product.image : '../images/img_page/sir.jpg'}" alt="${product.title || ''}" />
+                    </span>
+
+                    <span class="text-child">
+                        <h1>${product.title || "Mahsulot nomi yo'q"}</h1>
+                        <nav>
+                            <span>${currentPrice.toLocaleString('ru-RU')}₽</span>
+                            <span>за шт.</span>
+                        </nav>
+                    </span>
+                </div>
+                <div class="wrapper_suma">
+                    <span class="countFn">
+                        <button class="minus_add"><i class="bxr bx-minus"></i></button>
+                        <p>${item.quantity}</p>
+                        <button class="plus_add"><i class="bxr bx-plus"></i></button>
+                    </span>
+                    <span class="suma">
+                        <h1>${(currentPrice * item.quantity).toLocaleString('ru-RU')}₽</h1>
+                    </span>
+                </div>
+            `;
+
+            const minusBtn = childDiv.querySelector('.minus_add');
+            const plusBtn = childDiv.querySelector('.plus_add');
+
+            minusBtn.addEventListener('click', () => {
+                decreaseCartItem(item.id);
+            });
+
+            plusBtn.addEventListener('click', () => {
+                increaseCartItem(item.id);
+            });
+
+            childProductContainer.appendChild(childDiv);
+        }
+
+        // lengths / amounts
+        if (counterHeader) counterHeader.textContent = cartItems.length;
+        if (sumProduct) sumProduct.textContent = cartItems.length;
+
+        // totals and discounts
+        if (elementProduct1Text) elementProduct1Text.textContent = `${cartItems.length} товара`;
+        if (elementProduct1Price) elementProduct1Price.textContent = `${totalRegularPrice.toLocaleString('ru-RU')} ₽`;
+
+        let discount = totalRegularPrice - totalPrice;
+        if (elementProduct2Node && elementProduct2Discount) {
+            if (discount > 0) {
+                elementProduct2Discount.textContent = `-${discount.toLocaleString('ru-RU')} ₽`;
+                elementProduct2Node.style.display = 'flex';
+            } else {
+                elementProduct2Node.style.display = 'none';
+            }
+        }
+
+        if (itagSuma) itagSuma.textContent = `${totalPrice.toLocaleString('ru-RU')} ₽`;
+    }
+
+    // Dastlab savatchani yuklash
+    fetchCart();
 });
-
- */

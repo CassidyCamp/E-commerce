@@ -178,27 +178,80 @@ main {
   height: auto;
   font-size: 1.11vw;
   color: #414141;
+  margin-bottom: 10px;
 }
 
 .info_product button {
   width: 100%;
-  height: 40px;
+  height: 48px;
   background: none;
   border: 2px solid #70c05b;
   color: #70c05b;
   font-size: 16px;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .shoping button:hover {
   background-color: #ff6633;
+  border-color: #ff6633;
   color: white;
+}
+
+/* Quantity control - unified green bar like Lay's design */
+.quantity-control {
+  margin: auto;
+  width: 80%;
+  height: 48px;
+  background-color: #70c05b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.quantity-control .qty-btn {
+  width: 40px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.quantity-control .qty-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.quantity-control .qty-btn:active {
+  transform: scale(0.9);
+}
+
+.quantity-control .qty-btn i {
+  font-size: 20px;
+}
+
+.quantity-control .qty-value {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  user-select: none;
 }
 .menyu_2 {
   margin-top: 150px;
 }
 .narx-2 {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 .info_shoping h1 {
   font-family: "Winky Sans", sans-serif;

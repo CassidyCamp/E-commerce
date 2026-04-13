@@ -54,6 +54,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const cardToggle = document.querySelector('.card-status-toggle');
+    const toggleOptions = document.querySelectorAll('.card-status-toggle .toggle-option');
+    let priceMode = localStorage.getItem('priceMode') || 'with-card';
+
+    if (cardToggle) {
+        cardToggle.setAttribute('data-active', priceMode);
+        
+        toggleOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                priceMode = option.dataset.type;
+                cardToggle.setAttribute('data-active', priceMode);
+                localStorage.setItem('priceMode', priceMode);
+                fetchCart(); // Re-render cart and calculate totals based on new priceMode
+            });
+        });
+    }
+
+    function toggleWalletUI() {
+        const headInfo = document.querySelector('.head-info');
+        const senaMain = document.querySelector('.sena-main');
+        if (priceMode === 'regular') {
+            if (headInfo) headInfo.style.display = 'none';
+            if (senaMain) senaMain.style.display = 'none';
+        } else {
+            if (headInfo) headInfo.style.display = 'flex';
+            if (senaMain) senaMain.style.display = 'flex';
+        }
+    }
+
     async function increaseCartItem(id) {
         try {
             const res = await fetch(`${BASE_URL}/api/cart/${id}/increase/`, {
@@ -123,10 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let regularP = parseFloat(product.regular_price || 0);
             let cardP = parseFloat(product.card_price || regularP);
-            let currentPrice = cardP > 0 && cardP < regularP ? cardP : regularP;
+            
+            let baseP = priceMode === 'with-card' ? cardP : regularP;
 
-            totalRegularPrice += regularP * item.quantity;
+            // -10% har ikkalasida ham hisoblanadi
+            let itemDiscount = baseP * 0.10;
+            let currentPrice = baseP - itemDiscount;
+
+            totalRegularPrice += baseP * item.quantity;
             totalPrice += currentPrice * item.quantity;
+
+            let productTitle = product.title || "Mahsulot nomi yo'q";
+            if (productTitle.length > 37) {
+                productTitle = productTitle.substring(0, 37) + '...';
+            }
 
             const childDiv = document.createElement('div');
             childDiv.className = 'child';
@@ -139,11 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>
 
                     <span class="text-child">
-                        <h1>${product.title || "Mahsulot nomi yo'q"}</h1>
-                        <nav>
-                            <span>${currentPrice.toLocaleString('ru-RU')}₽</span>
-                            <span>за шт.</span>
-                        </nav>
+                        <h1><a href="#!" style="text-decoration: none; color: inherit;" title="${product.title || ''}">${productTitle}</a></h1>
+                        <div class="element_2" style="margin-top: 10px;">
+                            <div class="wrapper-info">
+                                <nav>
+                                    <span>${currentPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})}₽</span>
+                                    <span style="text-decoration: line-through; margin-left: 10px; color: var(--grayColor);">${baseP.toLocaleString('ru-RU', {minimumFractionDigits: 2})}₽</span>
+                                    <span style="margin-left: 10px;">за шт.</span>
+                                </nav>
+                            </div>
+                            <span class="aksiya" style="font-size: 14px; width: 45px; height: 25px; margin-left: 10px;">-10%</span>
+                        </div>
                     </span>
                 </div>
                 <div class="wrapper_suma">
@@ -153,7 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="plus_add"><i class="bxr bx-plus"></i></button>
                     </span>
                     <span class="suma">
-                        <h1>${(currentPrice * item.quantity).toLocaleString('ru-RU')}₽</h1>
+                        <h1>${(currentPrice * item.quantity).toLocaleString('ru-RU', {minimumFractionDigits: 2})}₽</h1>
+                        <h5>${(baseP * item.quantity).toLocaleString('ru-RU', {minimumFractionDigits: 2})}₽</h5>
                     </span>
                 </div>
             `;
@@ -178,19 +224,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // totals and discounts
         if (elementProduct1Text) elementProduct1Text.textContent = `${cartItems.length} товара`;
-        if (elementProduct1Price) elementProduct1Price.textContent = `${totalRegularPrice.toLocaleString('ru-RU')} ₽`;
+        if (elementProduct1Price) elementProduct1Price.textContent = `${totalRegularPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽`;
 
         let discount = totalRegularPrice - totalPrice;
         if (elementProduct2Node && elementProduct2Discount) {
             if (discount > 0) {
-                elementProduct2Discount.textContent = `-${discount.toLocaleString('ru-RU')} ₽`;
+                elementProduct2Discount.textContent = `-${discount.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽`;
                 elementProduct2Node.style.display = 'flex';
             } else {
                 elementProduct2Node.style.display = 'none';
             }
         }
 
-        if (itagSuma) itagSuma.textContent = `${totalPrice.toLocaleString('ru-RU')} ₽`;
+        if (itagSuma) itagSuma.textContent = `${totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})} ₽`;
+
+        toggleWalletUI();
     }
 
     // Dastlab savatchani yuklash

@@ -133,115 +133,7 @@ section {
   padding: 10px;
 }
 
-.shoping:hover {
-  transform: scale(1.02);
-}
 
-.shoping {
-  transition: 0.3s;
-  padding: 5px;
-  width: 100%;
-  height: auto;
-  min-height: 340px;
-  background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.18) 0px 3px 8px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-.shoping > .img_product {
-  width: 100%;
-  height: 170px;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.img_product > img {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 6px;
-  object-fit: contain;
-}
-
-.foiz {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  height: 30px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background-color: #ff6633;
-}
-.arxiv:hover {
-  background-color: #ff6633;
-  color: white;
-}
-
-.arxiv {
-  transition: 0.5s;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  border-radius: 8px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f3f2f1;
-  color: rgba(65, 65, 65, 1);
-  font-size: 24px;
-}
-.info_product {
-  width: 100%;
-  flex: 1;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.narx {
-  display: flex;
-  justify-content: space-between;
-  color: rgba(65, 65, 65, 1);
-  font-size: 1.2rem;
-}
-.narx :first-child {
-  font-weight: bold;
-}
-.malumot {
-  display: flex;
-  justify-content: space-between;
-  color: #bfbfbf;
-}
-.city {
-  width: 100%;
-  height: auto;
-  font-size: 1.14vw;
-  color: #414141;
-}
-
-.info_product button {
-  width: 100%;
-  height: 40px;
-  background: none;
-  border: 2px solid #70c05b;
-  color: #70c05b;
-  font-size: 16px;
-  border-radius: 6px;
-}
-
-.shoping button:hover {
-  background-color: #ff6633;
-  color: white;
-}
 
 .koproq-korish {
   display: flex;
@@ -371,48 +263,64 @@ section {
   background-color: #e05020;
 }
 
-/* ── Pagination buttons (JS-rendered) ──────────────────────────────────── */
+/* ── Pagination buttons (Match product.css) ─────────────────────────────── */
 .fav-pagination {
   width: 100%;
-  gap: 8px;
+  gap: 15px;
   list-style: none;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  padding: 0;
+  margin-top: 20px;
 }
 .fav-pagination li button {
   background: none;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 6px;
+  border: none;
+  color: #606060;
+  font-family: inherit;
   cursor: pointer;
-  min-width: 36px;
-  height: 36px;
+  text-decoration: none;
+  font-size: inherit;
+  transition: color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  color: #414141;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 .fav-pagination li button:hover {
-  background: #70c05b;
-  color: white;
-  border-color: #70c05b;
+  color: #ff6633;
 }
-.fav-pagination li button.active-page {
-  background: #70c05b;
-  color: white;
-  border-color: #70c05b;
-  font-weight: 700;
+.fav-pagination li button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.fav-pagination li button:disabled:hover {
+  color: #606060;
 }
 .fav-pagination li button p {
+  font-size: 24px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
-  font-size: 15px;
+  margin-top: 5px;
 }
 .fav-pagination li button i {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+  font-size: 30px;
 }
+.active-page {
+  color: #ff6633 !important;
+  font-weight: bold;
+}
+.active-page p {
+  font-weight: bold;
+}
+
 
 /* ── Empty state ─────────────────────────────────────────────────────────── */
 .fav-empty {

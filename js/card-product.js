@@ -1,15 +1,10 @@
-// BASE_URL, apiFetch, authHeader — api.js dan keladi (index.html da oldin yuklanadi)
-
+// BASE_URL, apiFetch — api.js dan keladi (index.html da oldin yuklanadi)
 
 let userFavorites = [];
 
-document.addEventListener("DOMContentLoaded", async () => {
-    if (localStorage.getItem('access')) {
-        await fetchFavorites();
-    }
-    fetchProducts();
-    fetchCategories();
-});
+/**
+ * Common product card logic shared across pages.
+ */
 
 async function fetchFavorites() {
     try {
@@ -19,7 +14,6 @@ async function fetchFavorites() {
             const res = await apiFetch(`/api/catalog/favorites/?page=${page}`);
             if (!res.ok) break;
             const data = await res.json();
-            // Handle both paginated { results: [...] } and plain array responses
             const results = Array.isArray(data) ? data : (data.results || []);
             allFavs = allFavs.concat(results);
             const hasNext = !Array.isArray(data) && data.next;
@@ -33,61 +27,7 @@ async function fetchFavorites() {
     }
 }
 
-
-
-async function fetchProducts() {
-    try {
-        const isProductPage = window.location.pathname.includes('product.html');
-        if (isProductPage) return; // Prevent index logic from running on product page
-
-        const response = await apiFetch('/api/catalog/products/');
-        if (!response.ok) throw new Error('Network error');
-        const data = await response.json();
-        const products = data.results || data;
-
-        // Fetch cart items to know which products are already in cart
-        let cartItems = [];
-        if (localStorage.getItem('access')) {
-            const cartRes = await apiFetch('/api/cart/');
-            if (cartRes.ok) {
-                cartItems = await cartRes.json();
-            }
-        }
-
-        // Filter products with discount_percent for Акции section
-        const discountedProducts = products.filter(p => p.discount_percent && parseFloat(p.discount_percent) > 0);
-
-        const cardShops = document.querySelectorAll('.card_shop');
-        if (cardShops.length > 0) {
-            // Populate the first block (Акции) - only products with discount
-            renderProducts(discountedProducts.slice(0, 4), cardShops[0], cartItems);
-        }
-        if (cardShops.length > 1) {
-            // Populate the second block (Новинки) - first products from the list
-            renderProducts(products.slice(0, 4), cardShops[1], cartItems);
-        }
-        if (cardShops.length > 2) {
-            // Populate the third block (Покупали раньше) - max 4 products
-            renderProducts(products.slice(0, 4), cardShops[2], cartItems);
-        }
-    } catch (error) {
-        console.error('Error fetching products:', error);
-    }
-}
-
-async function fetchCategories() {
-    // Optionally fetch categories if there is a category container
-    try {
-        const response = await apiFetch('/api/catalog/categories/');
-        if (!response.ok) throw new Error('Network error');
-        const categories = await response.json();
-        console.log("Categories loaded:", categories);
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-    }
-}
-
-// ─── Star SVG path data (5 stars, each 20px wide in a 256×16 viewport) ────────
+// ─── Star SVG path data ──────────────────────────────────────────────────────
 const STAR_PATHS = [
     "M7.10326 1.81698C7.47008 1.07374 8.52992 1.07374 8.89674 1.81699L10.1185 4.29249C10.2641 4.58763 10.5457 4.7922 10.8714 4.83953L13.6033 5.2365C14.4235 5.35568 14.751 6.36365 14.1575 6.94219L12.1807 8.8691C11.945 9.09884 11.8375 9.42984 11.8931 9.75423L12.3598 12.4751C12.4999 13.292 11.6424 13.9149 10.9088 13.5293L8.46534 12.2446C8.17402 12.0915 7.82598 12.0915 7.53466 12.2446L5.09119 13.5293C4.35756 13.9149 3.50013 13.292 3.64024 12.4751L4.1069 9.75423C4.16254 9.42984 4.05499 9.09884 3.81931 8.8691L1.8425 6.94219C1.24898 6.36365 1.57649 5.35568 2.39671 5.2365L5.12859 4.83953C5.4543 4.7922 5.73587 4.58763 5.88153 4.29249L7.10326 1.81698Z",
     "M27.1033 1.81698C27.4701 1.07374 28.5299 1.07374 28.8967 1.81699L30.1185 4.29249C30.2641 4.58763 30.5457 4.7922 30.8714 4.83953L33.6033 5.2365C34.4235 5.35568 34.751 6.36365 34.1575 6.94219L32.1807 8.8691C31.945 9.09884 31.8375 9.42984 31.8931 9.75423L32.3598 12.4751C32.4999 13.292 31.6424 13.9149 30.9088 13.5293L28.4653 12.2446C28.174 12.0915 27.826 12.0915 27.5347 12.2446L25.0912 13.5293C24.3576 13.9149 23.5001 13.292 23.6402 12.4751L24.1069 9.75423C24.1625 9.42984 24.055 9.09884 23.8193 8.8691L21.8425 6.94219C21.249 6.36365 21.5765 5.35568 22.3967 5.2365L25.1286 4.83953C25.4543 4.7922 25.7359 4.58763 25.8815 4.29249L27.1033 1.81698Z",
@@ -97,7 +37,6 @@ const STAR_PATHS = [
 ];
 
 function buildStarSvg(rating) {
-    // rating: 1–5, filled = orange, empty = grey
     const filled = Math.round(Math.max(0, Math.min(5, rating || 3)));
     const paths = STAR_PATHS.map((d, i) =>
         `<path d="${d}" fill="${i < filled ? '#FF6633' : '#BFBFBF'}"/>`
@@ -105,26 +44,20 @@ function buildStarSvg(rating) {
     return `<svg width="256" height="16" viewBox="0 0 256 16" fill="none" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
 }
 
+// ─── Render Products ─────────────────────────────────────────────────────────
 function renderProducts(products, container, cartItems = []) {
     if (!products || products.length === 0) return;
     container.innerHTML = '';
 
     products.forEach(product => {
-        // ── New backend fields ──────────────────────────────────────────────
-        // regular_price  → "Обычная" (original price, shown smaller/muted)
-        // card_price     → "С картой" (discounted price, shown bold/large)
-        // discount_percent → e.g. "50.00" → shown as -50%
         const regularPrice  = parseFloat(product.regular_price)  || 0;
         const cardPrice     = product.card_price ? parseFloat(product.card_price) : null;
         const discountPct   = product.discount_percent ? Math.round(parseFloat(product.discount_percent)) : null;
 
-        // ── Discount badge ──────────────────────────────────────────────────
         const percentBadge = discountPct
             ? `<div class="foiz">-${discountPct}%</div>`
             : '';
 
-        // ── Price block ─────────────────────────────────────────────────────
-        // If card_price exists → two-row layout (matches screenshot exactly)
         let priceHTML;
         if (cardPrice !== null) {
             priceHTML = `
@@ -143,20 +76,16 @@ function renderProducts(products, container, cartItems = []) {
                 </div>`;
         }
 
-        // ── Stars ───────────────────────────────────────────────────────────
         const starSvg = buildStarSvg(product.rating);
-
-        // ── Favorites ───────────────────────────────────────────────────────
         const isFavItem = userFavorites.find(f => f.product === product.id);
         const favClass = isFavItem ? 'active' : '';
 
-        // ── Cart button or quantity control ─────────────────────────────────
         const cartItem = cartItems.find(item => item.product === product.id);
         let cartButtonHTML;
 
         if (cartItem) {
             cartButtonHTML = `
-                <div class="quantity-control">
+                <div class="quantity-control" data-cart-id="${cartItem.id}" data-product-id="${product.id}">
                     <button class="qty-btn minus" onclick="decreaseCartItem(${cartItem.id}, event)">
                         <i class="bxr bx-minus"></i>
                     </button>
@@ -169,7 +98,6 @@ function renderProducts(products, container, cartItems = []) {
             cartButtonHTML = `<button onclick="addToCart(${product.id}, event)">В корзину</button>`;
         }
 
-        // ── Card ────────────────────────────────────────────────────────────
         const card = document.createElement('div');
         card.className = 'shoping';
         card.innerHTML = `
@@ -191,14 +119,13 @@ function renderProducts(products, container, cartItems = []) {
     });
 }
 
-// ─── Favorites API ───────────────────────────────────────────────────────────
+// ─── Toggle Favorite ─────────────────────────────────────────────────────────
 async function toggleFavorite(productId, event) {
     if (event) event.stopPropagation();
-    
     const targetEl = event ? (event.currentTarget instanceof Element ? event.currentTarget : event.target.closest('.arxiv')) : null;
 
     if (!localStorage.getItem('access')) {
-        window.location.href = '/page/login.html';
+        window.location.href = window.location.pathname.includes('/page/') ? './login.html' : './page/login.html';
         return;
     }
 
@@ -207,19 +134,14 @@ async function toggleFavorite(productId, event) {
     
     try {
         if (isFav) {
-            // Remove from favorites
             const favId = userFavorites[favItemIndex].id;
-            const res = await apiFetch(`/api/catalog/favorites/${favId}/`, {
-                method: 'DELETE'
-            });
+            const res = await apiFetch(`/api/catalog/favorites/${favId}/`, { method: 'DELETE' });
             if (res.ok) {
                 userFavorites.splice(favItemIndex, 1);
-                if (targetEl) {
-                    targetEl.classList.remove('active');
-                }
+                if (targetEl) targetEl.classList.remove('active');
+                window.dispatchEvent(new CustomEvent('favoritesUpdated'));
             }
         } else {
-            // Add to favorites
             const res = await apiFetch('/api/catalog/favorites/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -228,9 +150,8 @@ async function toggleFavorite(productId, event) {
             if (res.ok) {
                 const data = await res.json();
                 userFavorites.push(data);
-                if (targetEl) {
-                    targetEl.classList.add('active');
-                }
+                if (targetEl) targetEl.classList.add('active');
+                window.dispatchEvent(new CustomEvent('favoritesUpdated'));
             }
         }
     } catch (e) {
@@ -238,14 +159,11 @@ async function toggleFavorite(productId, event) {
     }
 }
 
-// ─── Cart API ────────────────────────────────────────────────────────────────
+// ─── Cart Logic ──────────────────────────────────────────────────────────────
 async function addToCart(productId, event) {
     if (event) event.stopPropagation();
-
     const btn = event ? (event.currentTarget || event.target) : null;
     const infoProduct = btn ? btn.closest('.info_product') : null;
-
-    // Disable button while waiting for API
     if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
     try {
@@ -256,10 +174,9 @@ async function addToCart(productId, event) {
         });
         if (res.ok) {
             const cartItem = await res.json();
-            // Instantly swap button → quantity-control
             if (infoProduct && btn) {
                 btn.outerHTML = `
-                    <div class="quantity-control" data-product-id="${productId}">
+                    <div class="quantity-control" data-cart-id="${cartItem.id}" data-product-id="${productId}">
                         <button class="qty-btn minus" onclick="decreaseCartItem(${cartItem.id}, event)">
                             <i class="bxr bx-minus"></i>
                         </button>
@@ -269,10 +186,9 @@ async function addToCart(productId, event) {
                         </button>
                     </div>`;
             }
-            updateCartCounter();
+            if (typeof updateCartCounter === 'function') updateCartCounter();
         } else {
             if (btn) { btn.disabled = false; btn.textContent = 'В корзину'; }
-            console.error('Failed to add to cart');
         }
     } catch (e) {
         if (btn) { btn.disabled = false; btn.textContent = 'В корзину'; }
@@ -282,7 +198,6 @@ async function addToCart(productId, event) {
 
 async function decreaseCartItem(cartItemId, event) {
     if (event) event.stopPropagation();
-
     const btn = event ? (event.currentTarget || event.target) : null;
     const qc  = btn ? btn.closest('.quantity-control') : null;
     const qtyEl = qc ? qc.querySelector('.qty-value') : null;
@@ -295,9 +210,7 @@ async function decreaseCartItem(cartItemId, event) {
         if (res.ok) {
             const data = await res.json().catch(() => null);
             const newQty = data ? (data.quantity ?? 0) : (qtyEl ? parseInt(qtyEl.textContent) - 1 : 0);
-
             if (newQty <= 0) {
-                // Item removed — swap quantity-control back to button
                 const productId = qc ? qc.dataset.productId : null;
                 if (qc && productId) {
                     qc.outerHTML = `<button onclick="addToCart(${productId}, event)">В корзину</button>`;
@@ -305,7 +218,7 @@ async function decreaseCartItem(cartItemId, event) {
             } else {
                 if (qtyEl) qtyEl.textContent = newQty;
             }
-            updateCartCounter();
+            if (typeof updateCartCounter === 'function') updateCartCounter();
         }
     } catch (e) {
         console.error(e);
@@ -314,7 +227,6 @@ async function decreaseCartItem(cartItemId, event) {
 
 async function increaseCartItem(cartItemId, event) {
     if (event) event.stopPropagation();
-
     const btn   = event ? (event.currentTarget || event.target) : null;
     const qc    = btn ? btn.closest('.quantity-control') : null;
     const qtyEl = qc ? qc.querySelector('.qty-value') : null;
@@ -329,20 +241,18 @@ async function increaseCartItem(cartItemId, event) {
             const newQty = data ? (data.quantity ?? (qtyEl ? parseInt(qtyEl.textContent) + 1 : 1))
                                 : (qtyEl ? parseInt(qtyEl.textContent) + 1 : 1);
             if (qtyEl) qtyEl.textContent = newQty;
-            updateCartCounter();
+            if (typeof updateCartCounter === 'function') updateCartCounter();
         }
     } catch (e) {
         console.error(e);
     }
 }
 
-
-function refreshActiveProducts() {
-    const isProductPage = window.location.pathname.includes('product.html');
-    if (isProductPage && typeof fetchPaginatedProducts === 'function') {
-        let currentPage = parseInt(localStorage.getItem('productPage')) || 1;
-        fetchPaginatedProducts(currentPage);
-    } else {
-        fetchProducts();
-    }
-}
+// Global exposure
+window.renderProducts = renderProducts;
+window.toggleFavorite = toggleFavorite;
+window.addToCart = addToCart;
+window.decreaseCartItem = decreaseCartItem;
+window.increaseCartItem = increaseCartItem;
+window.fetchFavorites = fetchFavorites;
+window.userFavorites = userFavorites;

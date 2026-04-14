@@ -287,12 +287,19 @@ function buildPagination() {
     if (totalPages <= 1) { ul.style.display = 'none'; return; }
     ul.style.display = 'flex';
 
-    const make = (html, page) => {
+    const isFirst = (currentPage === 1);
+    const isLast = (currentPage === totalPages || totalPages === 0);
+
+    const make = (html, page, isDisabled) => {
         const li  = document.createElement('li');
         const btn = document.createElement('button');
         btn.innerHTML = html;
-        if (page === currentPage && typeof html === 'number') btn.classList.add('active-page');
+        if (isDisabled) btn.disabled = true;
+        if (page === currentPage && typeof page === 'number' && !isDisabled) {
+            btn.classList.add('active-page');
+        }
         btn.addEventListener('click', () => {
+            if (isDisabled) return;
             currentPage = page;
             renderPage(currentPage, false);
             buildPagination();
@@ -303,31 +310,22 @@ function buildPagination() {
         return li;
     };
 
-    ul.appendChild(make('<i class="bxr bx-chevrons-left"></i>', 1));
-    ul.appendChild(make('<i class="bxr bx-chevron-left"></i>',  Math.max(1, currentPage - 1)));
+    // First + Prev
+    ul.appendChild(make('<i class="bxr bx-chevrons-left"></i>', 1, isFirst));
+    ul.appendChild(make('<i class="bxr bx-chevron-left"></i>',  Math.max(1, currentPage - 1), isFirst));
 
+    // Page numbers
     const startP = Math.max(1, currentPage - 3);
     const endP   = Math.min(totalPages, startP + 7);
     for (let p = startP; p <= endP; p++) {
-        const li  = document.createElement('li');
-        const btn = document.createElement('button');
-        btn.innerHTML = `<p>${p}</p>`;
-        if (p === currentPage) btn.classList.add('active-page');
-        const pg = p;
-        btn.addEventListener('click', () => {
-            currentPage = pg;
-            renderPage(currentPage, false);
-            buildPagination();
-            updatePokazatBtn();
-            document.querySelector('.fav-card-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-        li.appendChild(btn);
-        ul.appendChild(li);
+        ul.appendChild(make(`<p>${p}</p>`, p, false));
     }
 
-    ul.appendChild(make('<i class="bxr bx-chevron-right"></i>',  Math.min(totalPages, currentPage + 1)));
-    ul.appendChild(make('<i class="bxr bx-chevrons-right"></i>', totalPages));
+    // Next + Last
+    ul.appendChild(make('<i class="bxr bx-chevron-right"></i>',  Math.min(totalPages, currentPage + 1), isLast));
+    ul.appendChild(make('<i class="bxr bx-chevrons-right"></i>', totalPages, isLast));
 }
+
 
 // ── Показать ещё ──────────────────────────────────────────────────────────────
 function initPokazat() {

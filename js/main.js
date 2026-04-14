@@ -15,11 +15,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchFavorites() {
     try {
-        const res = await apiFetch('/api/catalog/favorites/');
-        if (res.ok) {
-            userFavorites = await res.json();
-            console.log('User favorites loaded', userFavorites);
+        let page = 1;
+        let allFavs = [];
+        while (true) {
+            const res = await apiFetch(`/api/catalog/favorites/?page=${page}`);
+            if (!res.ok) break;
+            const data = await res.json();
+            // Handle both paginated { results: [...] } and plain array responses
+            const results = Array.isArray(data) ? data : (data.results || []);
+            allFavs = allFavs.concat(results);
+            const hasNext = !Array.isArray(data) && data.next;
+            if (!hasNext) break;
+            page++;
         }
+        userFavorites = allFavs;
+        console.log('User favorites loaded', userFavorites);
     } catch (err) {
         console.error('Failed to fetch favorites', err);
     }
@@ -71,9 +81,13 @@ function initProfileDropdown() {
 
 async function fetchProducts() {
     try {
+        const isProductPage = window.location.pathname.includes('product.html');
+        if (isProductPage) return; // Prevent index logic from running on product page
+
         const response = await apiFetch('/api/catalog/products/');
         if (!response.ok) throw new Error('Network error');
-        const products = await response.json();
+        const data = await response.json();
+        const products = data.results || data;
 
         // Fetch cart items to know which products are already in cart
         let cartItems = [];
@@ -210,7 +224,7 @@ function renderProducts(products, container, cartItems = []) {
                   <i class="bxr bx-heart"></i>
                 </div>
               </div>
-              <div class="info_product" style="flex:1">
+              <div class="info_product">
                 ${priceHTML}
                 <div class="city">${product.title}</div>
                 <div class="rating">${starSvg}</div>
@@ -271,6 +285,13 @@ async function toggleFavorite(productId, event) {
 // ─── Cart API ────────────────────────────────────────────────────────────────
 async function addToCart(productId, event) {
     if (event) event.stopPropagation();
+
+    const btn = event ? (event.currentTarget || event.target) : null;
+    const infoProduct = btn ? btn.closest('.info_product') : null;
+
+    // Disable button while waiting for API
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
     try {
         const res = await apiFetch('/api/cart/', {
             method: 'POST',
@@ -278,31 +299,57 @@ async function addToCart(productId, event) {
             body: JSON.stringify({ product: productId })
         });
         if (res.ok) {
-            console.log('Added to cart');
-            // Refresh products to show updated cart state
-            fetchProducts();
+            const cartItem = await res.json();
+            // Instantly swap button → quantity-control
+            if (infoProduct && btn) {
+                btn.outerHTML = `
+                    <div class="quantity-control" data-product-id="${productId}">
+                        <button class="qty-btn minus" onclick="decreaseCartItem(${cartItem.id}, event)">
+                            <i class="bxr bx-minus"></i>
+                        </button>
+                        <span class="qty-value">${cartItem.quantity || 1}</span>
+                        <button class="qty-btn plus" onclick="increaseCartItem(${cartItem.id}, event)">
+                            <i class="bxr bx-plus"></i>
+                        </button>
+                    </div>`;
+            }
             updateCartCounter();
         } else {
+            if (btn) { btn.disabled = false; btn.textContent = 'В корзину'; }
             console.error('Failed to add to cart');
         }
     } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = 'В корзину'; }
         console.error(e);
     }
 }
 
 async function decreaseCartItem(cartItemId, event) {
     if (event) event.stopPropagation();
+
+    const btn = event ? (event.currentTarget || event.target) : null;
+    const qc  = btn ? btn.closest('.quantity-control') : null;
+    const qtyEl = qc ? qc.querySelector('.qty-value') : null;
+
     try {
         const res = await apiFetch(`/api/cart/${cartItemId}/decrease/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
         if (res.ok) {
-            console.log('Decreased cart item');
-            fetchProducts();
+            const data = await res.json().catch(() => null);
+            const newQty = data ? (data.quantity ?? 0) : (qtyEl ? parseInt(qtyEl.textContent) - 1 : 0);
+
+            if (newQty <= 0) {
+                // Item removed — swap quantity-control back to button
+                const productId = qc ? qc.dataset.productId : null;
+                if (qc && productId) {
+                    qc.outerHTML = `<button onclick="addToCart(${productId}, event)">В корзину</button>`;
+                }
+            } else {
+                if (qtyEl) qtyEl.textContent = newQty;
+            }
             updateCartCounter();
-        } else {
-            console.error('Failed to decrease cart item');
         }
     } catch (e) {
         console.error(e);
@@ -311,17 +358,22 @@ async function decreaseCartItem(cartItemId, event) {
 
 async function increaseCartItem(cartItemId, event) {
     if (event) event.stopPropagation();
+
+    const btn   = event ? (event.currentTarget || event.target) : null;
+    const qc    = btn ? btn.closest('.quantity-control') : null;
+    const qtyEl = qc ? qc.querySelector('.qty-value') : null;
+
     try {
         const res = await apiFetch(`/api/cart/${cartItemId}/increase/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
         if (res.ok) {
-            console.log('Increased cart item');
-            fetchProducts();
+            const data = await res.json().catch(() => null);
+            const newQty = data ? (data.quantity ?? (qtyEl ? parseInt(qtyEl.textContent) + 1 : 1))
+                                : (qtyEl ? parseInt(qtyEl.textContent) + 1 : 1);
+            if (qtyEl) qtyEl.textContent = newQty;
             updateCartCounter();
-        } else {
-            console.error('Failed to increase cart item');
         }
     } catch (e) {
         console.error(e);
@@ -342,5 +394,15 @@ async function updateCartCounter() {
         }
     } catch (e) {
         console.error('Failed to update cart counter:', e);
+    }
+}
+
+function refreshActiveProducts() {
+    const isProductPage = window.location.pathname.includes('product.html');
+    if (isProductPage && typeof fetchPaginatedProducts === 'function') {
+        let currentPage = parseInt(localStorage.getItem('productPage')) || 1;
+        fetchPaginatedProducts(currentPage);
+    } else {
+        fetchProducts();
     }
 }

@@ -52,7 +52,7 @@ nav > h2 {
   color: #bfbfbf;
 }
 .card-range > span > p {
-  background-color: #f3f2f1;
+  background-color: none;
   width: 100px;
   height: 30px;
   display: flex;
@@ -60,21 +60,33 @@ nav > h2 {
   justify-content: center;
   border-radius: 6px;
 }
+
+.btn_ochistit{
+  background: #F3F2F1;
+  width: 100px;
+  height: 30px;
+  border-radius: 6px;
+  border: none;
+}
+
 .range {
   width: 100%;
-  height: 80px;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 5px;
+  gap: 8px;
 }
 .range > span {
   width: 100%;
   display: flex;
   justify-content: space-between;
   padding: 5px;
-  height: 110px;
+  height: auto;
+  align-items: center;
+  gap: 6px;
 }
 .range > span > p {
   flex: 1;
@@ -85,26 +97,24 @@ nav > h2 {
   justify-content: start;
   padding: 0px 10px;
   color: #414141;
+  height: 38px;
 }
 .range > span > p:nth-child(2) {
-  flex: 0.1;
+  flex: 0.15;
   border: none;
   align-items: center;
   justify-content: center;
   color: black;
-  font-size: 24px;
+  font-size: 18px;
+  height: auto;
 }
 
-.range > input {
-  width: 70%;
-  height: 70%;
-}
 
 article {
   display: flex;
   gap: 10px;
   flex-direction: column;
-  height: 980px;
+  height: auto;
 }
 section {
   flex: 1;
@@ -116,12 +126,10 @@ section {
 }
 
 .card_shop {
-  /* width: 100%; */
-  height: 370px;
+  height: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  /* grid-template-columns: repeat(3, 1fr); */
-  gap: 25px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   padding: 10px;
 }
 
@@ -133,16 +141,20 @@ section {
   transition: 0.3s;
   padding: 5px;
   width: 100%;
-  height: 350px;
+  height: auto;
+  min-height: 340px;
   background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.18) 0px 3px 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 }
 .shoping > .img_product {
   width: 100%;
-  height: 45%;
+  height: 170px;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .img_product > img {
   height: 100%;
@@ -189,10 +201,8 @@ section {
 }
 .info_product {
   width: 100%;
-  height: 55%;
+  flex: 1;
   padding: 8px;
-  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, */
-  /* Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -241,18 +251,23 @@ section {
 
 .box-korish {
   width: 730px;
-  height: 70px;
+  height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   color: #606060;
 }
-.box-korish > a {
-  border-radius: 6px;
-  background-color: #f3f2f1;
-  width: 150px;
-  height: 30px;
+.box-korish > .btn_pokazat {
+  border: none;
+  background: #F3F2F1;
+  border: 6px;
+  width: 170px;
+  height: 40px;
+  color: #414141;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -283,3 +298,139 @@ section {
   margin-top: 6px;
   font-size: 30px;
 }
+
+/* ── Dual-range slider ──────────────────────────────────────────────────── */
+.dual-range-wrap {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 4px;
+  background: #d0f0c0;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+.range-input::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+  border-radius: 4px;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: all;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #70c05b;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,.28);
+  cursor: pointer;
+  margin-top: -7px;
+  position: relative;
+  z-index: 10;
+}
+.range-input::-moz-range-thumb {
+  pointer-events: all;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #70c05b;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,.28);
+  cursor: pointer;
+}
+.range-input::-moz-range-track {
+  background: transparent;
+  height: 6px;
+}
+
+.range-min { z-index: 3; }
+.range-max { z-index: 4; }
+
+/* ── Arxiv active state (favorited) ─────────────────────────────────────── */
+.arxiv.active {
+  background-color: #ff6633;
+  color: white;
+}
+.arxiv.active:hover {
+  background-color: #e05020;
+}
+
+/* ── Pagination buttons (JS-rendered) ──────────────────────────────────── */
+.fav-pagination {
+  width: 100%;
+  gap: 8px;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fav-pagination li button {
+  background: none;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #414141;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.fav-pagination li button:hover {
+  background: #70c05b;
+  color: white;
+  border-color: #70c05b;
+}
+.fav-pagination li button.active-page {
+  background: #70c05b;
+  color: white;
+  border-color: #70c05b;
+  font-weight: 700;
+}
+.fav-pagination li button p {
+  margin: 0;
+  font-size: 15px;
+}
+.fav-pagination li button i {
+  font-size: 20px;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.fav-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #bfbfbf;
+  font-size: 1.1rem;
+}
+
+/* ── Parent height auto ──────────────────────────────────────────────────── */
+.parent {
+  height: auto !important;
+  min-height: 400px;
+}
+article {
+  height: auto !important;
+}
+

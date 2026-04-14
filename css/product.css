@@ -58,7 +58,7 @@ main {
   /* width: 100%; */
   height: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   /* grid-template-columns: repeat( 4, 1fr ); */
   gap: 25px;
   padding: 10px;
@@ -71,8 +71,9 @@ main {
 .shoping {
   transition: 0.3s;
   padding: 5px;
-  width: 100%;
   height: 100%;
+  min-height: 340px;
+  max-height: 350px;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   border-radius: 6px;
@@ -87,9 +88,11 @@ main {
   justify-content: center;
 }
 .img_product > img {
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   border-radius: 6px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .foiz {
@@ -110,6 +113,55 @@ main {
 .arxiv:hover {
   background-color: #ff6633;
   color: white;
+}
+/* Quantity control - unified green bar like Lay's design */
+.quantity-control {
+  margin: 0px auto;
+  width: 80%;
+  height: 48px;
+  background-color: #70c05b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.quantity-control .qty-btn {
+  width: 40px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.quantity-control .qty-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.quantity-control .qty-btn:active {
+  transform: scale(0.9);
+}
+
+.quantity-control .qty-btn i {
+  font-size: 20px;
+}
+
+.quantity-control .qty-value {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  user-select: none;
 }
 
 .arxiv {
@@ -174,7 +226,7 @@ main {
 }
 
 .narx-2 {
-  margin-bottom: 30px;
+  margin-bottom: 3zz0px;
 }
 .info_shoping h1 {
   font-family: "Winky Sans", sans-serif;
@@ -353,7 +405,7 @@ main {
 .img_top img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 .card_Info .text_Info {
@@ -458,10 +510,19 @@ svg {
   justify-content: space-between;
   align-items: center;
 }
-.box-korish ul li a {
+.box-korish ul li button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
   text-decoration: none;
+  font-size: inherit;
 }
-.box-korish ul li a p {
+.box-korish ul li button:hover {
+  color: #ff6633;
+}
+.box-korish ul li button p {
   font-size: 24px;
   width: 30px;
   display: flex;
@@ -469,7 +530,7 @@ svg {
   justify-content: center;
   margin-top: 5px;
 }
-.box-korish ul li a i {
+.box-korish ul li button i {
   display: flex;
   align-items: center;
   justify-content: center;

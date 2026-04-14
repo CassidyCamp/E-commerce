@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="../css/footer.css" />
     <link rel="stylesheet" href="../css/header.css" />
+    <!-- <link rel="stylesheet" href="../css/main.css" /> -->
     <link rel="stylesheet" href="../css/product.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
     <link
@@ -20,25 +21,25 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=package_2"
     />
-    <script src="./scrol.js"></script>
+
 
     <script
       src="https://kit.fontawesome.com/dfead5f7ee.js"
       crossorigin="anonymous"
     ></script>
+
+    <script defer src="../js/api.js"></script>
+    <script defer src="../js/main.js"></script>
+    <script defer src="../js/product.js"></script>
   </head>
 
   <body>
     
     <header>
-
       <div class="contianer head">
-
         <div class="logoText_card">
-
           <div class="img_logo">
-
-            <a href="">
+            <a href="index.html">
               <svg
                 class="svg_header"
                 width="40"
@@ -68,7 +69,7 @@
           </div>
 
           <div class="text_logo">
-            <a href=""><h2>Северяночка</h2></a>
+            <a href="index.html"><h2>Северяночка</h2></a>
           </div>
         </div>
 
@@ -98,59 +99,63 @@
         </div>
 
         <div class="button_card">
-
-          <a class="card katalog" href="">
-            
+          <a class="card katalog" href="./Категория.html">
             <i class="bxr bx-menu-wide"></i>
             <p>Каталог</p>
-
           </a>
 
           <a href="./Избраное.html" class="card">
             <i class="bxr bx-heart bx-flip"> </i>
-            <p >Избранное</p>
+            <p>Избранное</p>
           </a>
 
-          <a href="#" class="card">
+          <a href="./product.html" class="card">
             <i class="bxr bx-box-alt"></i>
             <p>продукты</p>
           </a>
 
           <a href="./korzinka.html" class="card">
-            <i class="bxr bx-cart"></i>
-            <p href="./page/korzinka.html">Корзина</p>
+            <p class="counter_heder">1</p>
+            <i class="bxr bx-cart" style="font-size: 28px"></i>
+            <p href="./korzinka.html">Корзина</p>
           </a>
 
-          <a class="card img_header" href="" >
-              <img
-                src="../images/header_img/73a72afa3b3294ff7bb2f45d2d03ac0d0fee5e5f.png"
-                alt=""
-              />
+          <a class="card img_header" href="./login.html">
+            <img
+              src="./images/header_img/73a72afa3b3294ff7bb2f45d2d03ac0d0fee5e5f.png"
+              alt=""
+            />
           </a>
         </div>
 
         <div class="Logo_card">
           <div class="menyu_logo">
-            <a href=""
+            <a href="./login.html"
               ><img
                 src="../images/header_img/73a72afa3b3294ff7bb2f45d2d03ac0d0fee5e5f.png"
                 alt=""
             /></a>
 
-            <a href=""><h4>Алексей</h4></a>
+            <a href="./login.html"><h4>Алексей</h4></a>
           </div>
 
-          <button class="btn_sign_sat_profil">
+          <button class="btn_sign_sat_profil" id="profileDropdownBtn">
             <i
               class="bxr bx-chevron-down"
               style="color: #baa9b0; font-size: 27px"
             >
             </i>
           </button>
+
+          <!-- Seller dropdown menu -->
+          <div class="seller_dropdown" id="sellerDropdown">
+            <a href="./admin-page/admin-home.html" class="seller_menu_item">
+              <i class="bxr bx-store"></i>
+              <span>Mahsulotlarni Boshqarish</span>
+            </a>
+          </div>
         </div>
-
       </div>
-
     </header>
 
     <main>
@@ -602,40 +607,40 @@
           <div class="box-korish">
             <ul>
               <li>
-                <a href=""> <i class="bxr bx-chevrons-left"></i> </a>
+                <button> <i class="bxr bx-chevrons-left"></i> </button>
               </li>
               <li>
-                <a href=""> <i class="bxr bx-chevron-left"></i> </a>
+                <button> <i class="bxr bx-chevron-left"></i> </button>
               </li>
               <li>
-                <a href=""> <p>1</p> </a>
+                <button> <p>1</p> </button>
               </li>
               <li>
-                <a href=""> <p>2</p> </a>
+                <button> <p>2</p> </button>
               </li>
               <li>
-                <a href=""> <p>3</p> </a>
+                <button> <p>3</p> </button>
               </li>
               <li>
-                <a href=""> <p>4</p> </a>
+                <button> <p>4</p> </button>
               </li>
               <li>
-                <a href=""> <p>5</p> </a>
+                <button> <p>5</p> </button>
               </li>
               <li>
-                <a href=""> <p>6</p> </a>
+                <button> <p>6</p> </button>
               </li>
               <li>
-                <a href=""> <p>7</p> </a>
+                <button> <p>7</p> </button>
               </li>
               <li>
-                <a href=""> <p>8</p> </a>
+                <button> <p>8</p> </button>
               </li>
               <li>
-                <a href=""> <i class="bxr bx-chevron-right"></i> </a>
+                <button> <i class="bxr bx-chevron-right"></i> </button>
               </li>
               <li>
-                <a href=""> <i class="bxr bx-chevrons-right"></i> </a>
+                <button> <i class="bxr bx-chevrons-right"></i> </button>
               </li>
             </ul>
           </div>

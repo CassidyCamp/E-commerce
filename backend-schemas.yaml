@@ -400,6 +400,13 @@ paths:
   /api/catalog/favorites/:
     get:
       operationId: catalog_favorites_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
       tags:
       - Favorite
       security:
@@ -409,9 +416,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FavoritSerailzer'
+                $ref: '#/components/schemas/PaginatedFavoritSerailzerList'
           description: ''
     post:
       operationId: catalog_favorites_create
@@ -541,6 +546,13 @@ paths:
   /api/catalog/products/:
     get:
       operationId: catalog_products_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
       tags:
       - Product
       security:
@@ -550,9 +562,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductSerailzer'
+                $ref: '#/components/schemas/PaginatedProductSerailzerList'
           description: ''
     post:
       operationId: catalog_products_create
@@ -811,6 +821,32 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/orders/check/:
+    post:
+      operationId: orders_check_create
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCheck'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderCheck'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderCheck'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCheck'
+          description: ''
   /api/schema/:
     get:
       operationId: schema_retrieve
@@ -1076,6 +1112,61 @@ components:
       - phone
       - status
       - total_price
+    OrderCheck:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: integer
+      required:
+      - items
+    PaginatedFavoritSerailzerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoritSerailzer'
+    PaginatedProductSerailzerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSerailzer'
     PatchedCartItem:
       type: object
       properties:

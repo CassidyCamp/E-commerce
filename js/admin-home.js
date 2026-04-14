@@ -98,8 +98,10 @@ async function loadProducts() {
   try {
     const res = await apiFetch(`${API}/api/catalog/products/`);
     if (!res.ok) throw new Error();
-    allProducts = await res.json();
-    document.getElementById('totalProducts').textContent = allProducts.length;
+    const data = await res.json();
+    allProducts = data.results || data; // handle paginated response
+    const total = data.count !== undefined ? data.count : allProducts.length;
+    document.getElementById('totalProducts').textContent = total;
     document.getElementById('availableProducts').textContent =
       allProducts.filter(p => p.is_available).length;
     renderProducts(allProducts);
@@ -276,7 +278,8 @@ async function loadCategories() {
   try {
     const res = await apiFetch(`${API}/api/catalog/categories/`);
     if (!res.ok) throw new Error();
-    allCategories = await res.json();
+    const data = await res.json();
+    allCategories = data.results || data; // handle possible paginated response
     document.getElementById('totalCategories').textContent = allCategories.length;
     renderCategories(allCategories);
   } catch {

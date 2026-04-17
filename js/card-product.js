@@ -1,6 +1,6 @@
 // BASE_URL, apiFetch — api.js dan keladi (index.html da oldin yuklanadi)
 
-let userFavorites = [];
+window.userFavorites = window.userFavorites || [];
 
 /**
  * Common product card logic shared across pages.
@@ -20,8 +20,8 @@ async function fetchFavorites() {
             if (!hasNext) break;
             page++;
         }
-        userFavorites = allFavs;
-        console.log('User favorites loaded', userFavorites);
+        window.userFavorites = allFavs;
+        console.log('User favorites loaded', window.userFavorites);
     } catch (err) {
         console.error('Failed to fetch favorites', err);
     }
@@ -77,7 +77,7 @@ function renderProducts(products, container, cartItems = []) {
         }
 
         const starSvg = buildStarSvg(product.rating);
-        const isFavItem = userFavorites.find(f => f.product === product.id);
+        const isFavItem = window.userFavorites.find(f => f.product === product.id);
         const favClass = isFavItem ? 'active' : '';
 
         const cartItem = cartItems.find(item => item.product === product.id);
@@ -129,15 +129,15 @@ async function toggleFavorite(productId, event) {
         return;
     }
 
-    const favItemIndex = userFavorites.findIndex(f => f.product === productId);
+    const favItemIndex = window.userFavorites.findIndex(f => f.product === productId);
     const isFav = favItemIndex !== -1;
     
     try {
         if (isFav) {
-            const favId = userFavorites[favItemIndex].id;
+            const favId = window.userFavorites[favItemIndex].id;
             const res = await apiFetch(`/api/catalog/favorites/${favId}/`, { method: 'DELETE' });
             if (res.ok) {
-                userFavorites.splice(favItemIndex, 1);
+                window.userFavorites.splice(favItemIndex, 1);
                 if (targetEl) targetEl.classList.remove('active');
                 window.dispatchEvent(new CustomEvent('favoritesUpdated'));
             }
@@ -149,7 +149,7 @@ async function toggleFavorite(productId, event) {
             });
             if (res.ok) {
                 const data = await res.json();
-                userFavorites.push(data);
+                window.userFavorites.push(data);
                 if (targetEl) targetEl.classList.add('active');
                 window.dispatchEvent(new CustomEvent('favoritesUpdated'));
             }
@@ -255,4 +255,3 @@ window.addToCart = addToCart;
 window.decreaseCartItem = decreaseCartItem;
 window.increaseCartItem = increaseCartItem;
 window.fetchFavorites = fetchFavorites;
-window.userFavorites = userFavorites;

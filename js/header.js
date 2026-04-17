@@ -4,6 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     initProfileDropdown();
+    initCatalogMenuToggle();
     if (localStorage.getItem('access')) {
         updateCartCounter();
     }
@@ -48,6 +49,27 @@ function initProfileDropdown() {
     document.addEventListener('click', (e) => {
         if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.style.display = 'none';
+        }
+    });
+}
+
+// ─── Catalog Menu Toggle ──────────────────────────────────────────────────────
+function initCatalogMenuToggle() {
+    const menyuBtn = document.querySelector('.menyu_card');
+    const itemWrapper = document.querySelector('.item-wrapper');
+
+    if (!menyuBtn || !itemWrapper) return;
+
+    // Toggle dropdown on button click
+    menyuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        itemWrapper.classList.toggle('active');
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        if (!menyuBtn.contains(e.target) && !itemWrapper.contains(e.target)) {
+            itemWrapper.classList.remove('active');
         }
     });
 }
